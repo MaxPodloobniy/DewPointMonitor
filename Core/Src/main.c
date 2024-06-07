@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdio.h>
+#include <math.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -244,6 +245,7 @@ int main(void)
 
 	                  // Виведення температури і вологості на LCD
 	                  char buffer[16];
+	                  lcd_send_cmd(0x01);
 	                  lcd_send_cmd(0x80);
 	                  snprintf(buffer, sizeof(buffer), "Temp: %.1f C", tCelsius);
 	                  lcd_send_string(buffer);
@@ -256,10 +258,11 @@ int main(void)
 	                  if (tCelsius <= dew_point) {
 	                      // Виведення повідомлення про точку роси та звуковий сигнал
 	                      for (int i = 0; i < 10; i++) {
+	                          lcd_send_cmd(0x01);
 	                          lcd_send_cmd(0x80);
-	                          lcd_send_string("Dewpoint       ");
+	                          lcd_send_string("Dewpoint        ");
 	                          lcd_send_cmd(0xC0);
-	                          lcd_send_string("reached!       ");
+	                          lcd_send_string("reached!        ");
 
 	                          HAL_GPIO_WritePin(Zummer_pin_GPIO_Port, Zummer_pin_Pin, GPIO_PIN_SET);
 	                          HAL_Delay(100);
@@ -272,18 +275,24 @@ int main(void)
 	                  HAL_Delay(2000);
 	              } else {
 	                  // Виведення повідомлення про помилку зчитування
-	                  lcd_send_cmd(0x80);
-	                  lcd_send_string("Error          ");
+	            	  lcd_send_cmd(0x01);
+	            	  HAL_Delay(10);
+	            	  lcd_send_cmd(0x80);
+	                  lcd_send_string("Error           ");
+	                  HAL_Delay(10);
 	                  lcd_send_cmd(0xC0);
-	                  lcd_send_string("Sensor Read    ");
+	                  lcd_send_string("Sensor Read     ");
 	                  HAL_Delay(2000);
 	              }
 	          } else {
 	              // Виведення повідомлення про помилку ініціалізації
-	              lcd_send_cmd(0x80);
-	              lcd_send_string("Error          ");
+	        	  lcd_send_cmd(0x01);
+	        	  HAL_Delay(10);
+	        	  lcd_send_cmd(0x80);
+	              lcd_send_string("Error           ");
+	              HAL_Delay(10);
 	              lcd_send_cmd(0xC0);
-	              lcd_send_string("Sensor Init   ");
+	              lcd_send_string("Sensor Init     ");
 	              HAL_Delay(2000);
 	          }
     /* USER CODE END WHILE */
